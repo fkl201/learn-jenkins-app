@@ -52,15 +52,15 @@ pipeline {
                     //image 'mcr.microsoft.com/playwright:v1.51.1-noble'
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
+                    //args '-u root:root' (Don't use root)
                 }
             }
             steps {
                 sh '''
                     echo "E2E Stage"
                     npm install -g serve
-                    serve -s build
+                    node_module/.bin/serve -s build
                     npx playwright test
-
                 '''
             }
         }        
