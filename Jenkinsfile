@@ -23,7 +23,16 @@ pipeline {
         
         stage('Test') {
             steps {
-                echo "Test Stage"
+                sh '''
+                    echo "Test Stage"
+                    if [ -f build/index.html ]
+                    then
+                        echo "build/index.html exists."
+                        npm test
+                    else
+                        echo "build/index.html does not exist."
+                    fi
+                '''
             }
         }
     }
