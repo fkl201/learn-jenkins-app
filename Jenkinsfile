@@ -96,7 +96,8 @@ pipeline {
             agent {
                 docker {
                     //image 'mcr.microsoft.com/playwright:v1.51.1-noble'
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    //image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                     //args '-u root:root' (Don't use root)
                 }
@@ -109,12 +110,11 @@ pipeline {
             steps {
                 sh '''
                     echo "Staging E2E Stage"
-                    npm install netlify-cli node-jq
-                    node_modules/.bin/netlify --version
+                    netlify --version
                     echo "Deploy to Staging SITE_ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status node-jq
-                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
-                    CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json)
+                    netlify status node-jq
+                    netlify deploy --dir=build --json > deploy-output.json
+                    CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output.json)
                     npx playwright test --reporter=html
                 '''
             }
@@ -139,7 +139,8 @@ pipeline {
             agent {
                 docker {
                     //image 'mcr.microsoft.com/playwright:v1.51.1-noble'
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    //image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                     //args '-u root:root' (Don't use root)
                 }
@@ -153,11 +154,10 @@ pipeline {
                 sh '''
                     echo "Prod E2E Stage"
                     node --version
-                    npm install netlify-cli
-                    node_modules/.bin/netlify --version
+                    netlify --version
                     echo "Deploy to Prodution SITE_ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
+                    netlify status
+                    netlify deploy --dir=build --prod
                     npx playwright test --reporter=html
                 '''
             }
